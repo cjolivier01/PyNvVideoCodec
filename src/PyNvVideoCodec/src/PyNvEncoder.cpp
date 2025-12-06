@@ -1021,7 +1021,8 @@ static CAPS PyNvEncoderCaps(
     CUcontext cudacontext;
     cuDeviceGet(&cuDevice, iGPU);
     ValidateGpuId(iGPU);
-    cuCtxCreate(&cudacontext, 0, cuDevice);
+    // Use explicit v2 API for compatibility with newer CUDA versions.
+    cuCtxCreate_v2(&cudacontext, 0, cuDevice);
 
     NV_ENC_OPEN_ENCODE_SESSION_EX_PARAMS encodeSessionExParams = { NV_ENC_OPEN_ENCODE_SESSION_EX_PARAMS_VER };
     encodeSessionExParams.device = cudacontext;

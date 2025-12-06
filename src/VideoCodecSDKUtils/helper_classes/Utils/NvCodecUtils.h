@@ -47,6 +47,10 @@
 #include <condition_variable>
 #ifndef DEMUX_ONLY
 #include <cuda.h>
+// Forward declaration for legacy context creation API. Newer CUDA
+// headers may not expose this overload by default, but the symbol
+// is still provided by the CUDA driver for backwards compatibility.
+extern "C" CUresult CUDAAPI cuCtxCreate_v2(CUcontext *pctx, unsigned int flags, CUdevice dev);
 #endif
 
 extern simplelogger::Logger *logger;
@@ -609,7 +613,10 @@ static void createCudaContext(CUcontext* cuContext, int iGpu, unsigned int flags
     char szDeviceName[80];
     ck(cuDeviceGetName(szDeviceName, sizeof(szDeviceName), cuDevice));
     std::cout << "GPU in use: " << szDeviceName << std::endl;
-    ck(cuCtxCreate(cuContext, flags, cuDevice));
+    // Use explicit v2 API to remain compatible with
+    // newer CUDA versions where cuCtxCreate is mapped
+    // to a v4 overload with a different signature.
+    ck(cuCtxCreate_v2(cuContext, flags, cuDevice));
 }
 
 static void createCudaStream(CUstream* cuStream, CUcontext* cuContext,int iGpu, unsigned int flags)

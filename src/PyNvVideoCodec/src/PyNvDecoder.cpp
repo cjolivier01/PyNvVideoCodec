@@ -214,7 +214,9 @@ static CAPS PyNvDecoderCaps(
     CUdevice cuDevice = 0;
     CUcontext cudacontext;
     cuDeviceGet(&cuDevice, iGPU);
-    cuCtxCreate(&cudacontext, 0, cuDevice);
+    // Use explicit v2 API to avoid signature mismatch with
+    // newer CUDA versions where cuCtxCreate is mapped to v4.
+    cuCtxCreate_v2(&cudacontext, 0, cuDevice);
     CUVIDDECODECAPS decodecaps;
     memset(&decodecaps, 0, sizeof(decodecaps));
     decodecaps.eCodecType      = codec;
