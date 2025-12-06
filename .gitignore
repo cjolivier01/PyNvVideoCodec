@@ -1,4 +1,5 @@
 /build
+/external/ffmpeg
 *.so
 *.so.*
 /dist
