@@ -57,10 +57,18 @@ def run_transcode(input_path: Path, output_path: Path, gpu_id: int, codec: str, 
     decode + encode + mux into the requested container.
     """
     # Encoder configuration. SimpleTranscoder will derive width/height/FPS.
-    config = {
-        "codec": codec.lower(),
-        "preset": preset.upper(),
-    }
+    # Start from the default transcode config used by the samples, if present,
+    # then override codec/preset from CLI so behavior matches the reference.
+    config: dict[str, str] = {}
+    default_cfg_path = Path("samples/SimpleDecoder/transcode_config.json")
+    if default_cfg_path.is_file():
+        try:
+            config = json.loads(default_cfg_path.read_text())
+        except Exception:
+            config = {}
+
+    config["codec"] = codec.lower()
+    config["preset"] = preset.upper()
 
     transcoder = nvc.Transcoder(
         str(input_path),
@@ -214,4 +222,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
