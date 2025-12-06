@@ -1,6 +1,7 @@
 /build
 *.so
 *.so.*
+/dist
 __pycache__
 *.egg-info
 _skbuild
