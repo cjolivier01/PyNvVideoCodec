@@ -49,4 +49,7 @@ if __name__ == "__main__":
         package_dir={"": "src", "samples": "samples", "benchmarks": "benchmarks"},
         include_package_data=True,
         cmake_install_dir="src",
+        # Ensure compatibility with newer CMake versions when configuring
+        # vendored dependencies such as pybind11.
+        cmake_args=["-DCMAKE_POLICY_VERSION_MINIMUM=3.5"],
     )
