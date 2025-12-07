@@ -67,4 +67,5 @@ public:
 
     uint64_t TimestampFromFrame(uint32_t index) { return demuxer->TimestampFromFrame(index); }
 
+    NvDemuxer* GetNvDemuxer() { return demuxer.get(); }
 };

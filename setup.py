@@ -45,7 +45,7 @@ if __name__ == "__main__":
         description="PyNvVideoCodec is NVIDIA's Python based video codec library for hardware accelerated video encode and decode on NVIDIA GPUs.",
         author="NVIDIA",
         license="MIT",
-        packages=["PyNvVideoCodec", "PyNvVideoCodec.decoders", "PyNvVideoCodec.transcoder", "samples", "benchmarks"],
+        packages=["PyNvVideoCodec", "PyNvVideoCodec.decoders", "PyNvVideoCodec.transcoder", "PyNvVideoCodec.utils", "samples", "benchmarks"],
         package_dir={"": "src", "samples": "samples", "benchmarks": "benchmarks"},
         include_package_data=True,
         cmake_install_dir="src",

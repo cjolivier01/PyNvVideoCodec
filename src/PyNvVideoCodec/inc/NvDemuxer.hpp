@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#pragma once
+
 #include "FFmpegDemuxer.h"
 #include <chrono>
 #ifndef DEMUX_ONLY
@@ -107,4 +109,5 @@ public:
 
     uint64_t TimestampFromFrame(uint32_t index) { return demuxer->TsFromFrameNumber(index); }
 
+    FFmpegDemuxer* GetFFmpegDemuxer() { return demuxer.get(); }
 };

@@ -62,8 +62,10 @@ else()
         src/ExternalBuffer.cpp
         src/PyNvVideoCodec.cpp
         src/PyNvDemuxer.cpp
+        src/PyNvMuxer.cpp
         src/PyNvEncoder.cpp
         src/NvDemuxer.cpp
+        src/NvMuxer.cpp
         src/PyCAIMemoryView.cpp
         src/PyNvDecoder.cpp
         src/NvEncoderClInterface.cpp

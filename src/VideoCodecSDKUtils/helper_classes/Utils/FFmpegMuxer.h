@@ -193,6 +193,7 @@ public:
     }
 
     bool Mux(uint8_t* data, unsigned int size, int64_t pts, int64_t dts, int64_t duration, int stream_index, int is_key_frame = 0, int numb = 0) {
+        // std::cout << "pts=" << pts << " dts=" << dts << " dur=" << duration << " size=" << size << " stream_index=" << stream_index << std::endl;
         if (!fmtc) {
             return false;
         }

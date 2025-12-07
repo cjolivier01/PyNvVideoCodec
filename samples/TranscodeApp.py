@@ -81,6 +81,23 @@ def run_transcode(input_path: Path, output_path: Path, gpu_id: int, codec: str, 
     transcoder.transcode_with_mux()
 
 
+def remux_only(input_path: Path, output_path: Path) -> None:
+    """
+    Simple remux using the Python-exposed demuxer and muxer.
+
+    This does not re-encode; it reads compressed packets from the input
+    container and writes them into a new container using PyNvMuxer.
+    """
+    demuxer = nvc.CreateDemuxer(filename=str(input_path))
+    muxer = nvc.CreateMuxer(filename=str(output_path), demuxer=demuxer)
+
+    for packet in demuxer:
+        muxer.Mux(packet)
+
+    # Ensure container trailer is written before returning.
+    muxer.Close()
+
+
 def _nv12_frame_to_bgr(frame) -> np.ndarray:
     """
     Convert a DecodedFrame in NV12 layout (host memory) into a BGR image.
@@ -197,6 +214,11 @@ def parse_args() -> argparse.Namespace:
         help="If set, also decode and display frames on the CPU.",
     )
     parser.add_argument(
+        "--remux-only",
+        action="store_true",
+        help="If set, only remux the input container using PyNvMuxer (no re-encode).",
+    )
+    parser.add_argument(
         "--max-display-frames",
         type=int,
         default=0,
@@ -211,8 +233,12 @@ def main() -> None:
     if not args.input.is_file():
         raise SystemExit(f"Input file does not exist: {args.input}")
 
-    # Run GPU-based transcode with container muxing handled by the library.
-    run_transcode(args.input, args.output, args.gpu_id, args.codec, args.preset)
+    # Either perform a full GPU transcode or a simple remux using the
+    # new Python-visible muxer.
+    if args.remux_only:
+        remux_only(args.input, args.output)
+    else:
+        run_transcode(args.input, args.output, args.gpu_id, args.codec, args.preset)
 
     # Optional preview (decode-only path, not required for transcode).
     if args.display:

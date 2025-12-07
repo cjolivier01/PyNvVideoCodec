@@ -69,6 +69,7 @@ void Init_PyNvDecoder(py::module& m);
 void Init_PyNvSimpleDecoder(py::module& m);
 void Init_PyNvThreadedDecoder(py::module& m);
 void Init_PyNvSimpleTranscoder(py::module& m);
+void Init_PyNvMuxer(py::module& m);
 
 PYBIND11_MODULE(_PyNvVideoCodec, m)
 {
@@ -153,6 +154,7 @@ PYBIND11_MODULE(_PyNvVideoCodec, m)
 
 
     Init_PyNvDemuxer(m);
+    Init_PyNvMuxer(m);
     Init_PyNvEncoder(m);
     Init_PyNvDecoder(m);
     Init_PyNvSimpleDecoder(m);

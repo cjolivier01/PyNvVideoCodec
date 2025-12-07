@@ -574,6 +574,16 @@ public:
 
     int64_t GetDuration() const { return fmtc->duration; }
 
+    const uint8_t* GetVideoExtradata(size_t& size) const
+    {
+        size = 0;
+        if (!fmtc || !fmtc->streams[iVideoStream] || !fmtc->streams[iVideoStream]->codecpar) {
+            return nullptr;
+        }
+        size = fmtc->streams[iVideoStream]->codecpar->extradata_size;
+        return fmtc->streams[iVideoStream]->codecpar->extradata;
+    }
+
     bool IsVFR() const { 
         return framerate != avg_framerate; 
     }
