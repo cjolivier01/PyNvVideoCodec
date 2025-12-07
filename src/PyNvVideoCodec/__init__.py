@@ -190,6 +190,7 @@ try:
     from .decoders.SimpleDecoder import SimpleDecoder
     from .decoders.ThreadedDecoder import ThreadedDecoder
     from .transcoder.Transcoder import Transcoder
+    from .utils.PyNvVideoEncoder import PyNvVideoEncoder
 
 except Exception as e:
     logger.error(f"Error importing PyNvVideoCodec: {e}")
