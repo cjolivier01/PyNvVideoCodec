@@ -27,14 +27,67 @@
 
 import sys
 import os
+from distutils.version import LooseVersion
+import types
 
-from pkg_resources import VersionConflict, require
 
-try:
-    require("setuptools>=42")
-except VersionConflict:
-    print("Error: version of setuptools is too old (<42)!")
-    sys.exit(1)
+def _ensure_setuptools(min_version):
+    try:
+        import setuptools
+    except ImportError:
+        try:
+            import ensurepip
+        except Exception as exc:
+            print("Error: setuptools is required and ensurepip is unavailable.")
+            print(exc)
+            sys.exit(1)
+        ensurepip.bootstrap()
+        import setuptools
+
+    if LooseVersion(setuptools.__version__) < LooseVersion(min_version):
+        print("Error: version of setuptools is too old (<%s)!" % min_version)
+        sys.exit(1)
+
+    return setuptools
+
+
+_ensure_setuptools("42")
+
+
+def _install_pkg_resources_shim():
+    try:
+        import pkg_resources  # noqa: F401
+        return
+    except Exception:
+        pass
+
+    try:
+        from importlib import metadata
+    except Exception:
+        try:
+            import importlib_metadata as metadata
+        except Exception:
+            return
+
+    def load_entry_point(spec, group, name):
+        dist_name, _, _ = spec.partition("==")
+        try:
+            dist = metadata.distribution(dist_name)
+        except Exception as exc:
+            raise ImportError("Distribution not found: %s" % dist_name) from exc
+        for ep in dist.entry_points:
+            if ep.group == group and ep.name == name:
+                return ep.load()
+        raise ImportError(
+            "Entry point not found: %s %s %s" % (dist_name, group, name)
+        )
+
+    shim = types.ModuleType("pkg_resources")
+    shim.load_entry_point = load_entry_point
+    sys.modules["pkg_resources"] = shim
+
+
+_install_pkg_resources_shim()
 
 if __name__ == "__main__":
     import skbuild
