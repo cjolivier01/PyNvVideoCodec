@@ -34,7 +34,6 @@ __maintainer__ = "NVIDIA"
 __email__ = "TODO"
 __status__ = "Production"
 
-from ast import Str
 import string
 import os
 import platform
